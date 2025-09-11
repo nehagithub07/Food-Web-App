@@ -12,7 +12,7 @@ async function uploadFile(file, fileName) {
         fileName: fileName, // required
     })
 
-    return result; // Return the URL of the uploaded file
+    return result;  
 }
 
 module.exports = {
