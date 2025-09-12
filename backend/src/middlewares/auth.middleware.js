@@ -1,12 +1,13 @@
-const foodPartnerModel = require("../models/foodpartner.model");
+const foodPartnerModel = require("../models/foodpartner.model")
 const userModel = require("../models/user.model")
 const jwt = require("jsonwebtoken");
 
+
 async function authFoodPartnerMiddleware(req, res, next) {
+
     const token = req.cookies.token;
 
-
-    if(!token) {
+    if (!token) {
         return res.status(401).json({
             message: "Please login first"
         })
@@ -17,19 +18,25 @@ async function authFoodPartnerMiddleware(req, res, next) {
 
         const foodPartner = await foodPartnerModel.findById(decoded.id);
 
-        req.foodPartner = foodPartner;
-        next();
+        req.foodPartner = foodPartner
+
+        next()
+
     } catch (err) {
+
         return res.status(401).json({
             message: "Invalid token"
         })
+
     }
+
 }
 
-
 async function authUserMiddleware(req, res, next) {
+
     const token = req.cookies.token;
-      if(!token) {
+
+    if (!token) {
         return res.status(401).json({
             message: "Please login first"
         })
@@ -40,16 +47,21 @@ async function authUserMiddleware(req, res, next) {
 
         const user = await userModel.findById(decoded.id);
 
-        req.user = user;
-        next();
+        req.user = user
+
+        next()
+
     } catch (err) {
+
         return res.status(401).json({
             message: "Invalid token"
         })
+
     }
 
 }
+
 module.exports = {
     authFoodPartnerMiddleware,
-    authUserMiddleware    
+    authUserMiddleware
 }

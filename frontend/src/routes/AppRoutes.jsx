@@ -1,11 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import UserRegister from '../components/UserRegister';
-import UserLogin from '../components/UserLogin';
-import FoodPartnerRegister from '../components/FoodPartnerRegister';
-import FoodPartnerLogin from '../components/FoodPartnerLogin';
-import Home from '../components/Home';
-import CreateFood  from '../components/CreateFood';
+import UserRegister from '../components/UserRegister.jsx';
+import UserLogin from '../components/UserLogin.jsx';
+import FoodPartnerRegister from '../components/FoodPartnerRegister.jsx';
+import FoodPartnerLogin from '../components/FoodPartnerLogin.jsx';
+import Home from '../pages/Home.jsx';
+import CreateFood from '../components/CreateFood.jsx';
+import FoodDetail from '../components/FoodDetail.jsx';
 
 const AppRoutes = () => {
   return (
@@ -16,7 +17,8 @@ const AppRoutes = () => {
         <Route path="/food-partner/register" element={<FoodPartnerRegister />} />
         <Route path="/food-partner/login" element={<FoodPartnerLogin />} />
         <Route path="/" element={<Home />} />
-        <Route path="/create-food" element={<CreateFood/>} />
+        <Route path="/create-food" element={<CreateFood />} />
+        <Route path="/food/:id" element={<FoodDetail />} />
       </Routes>
     </Router>
   );

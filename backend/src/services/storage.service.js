@@ -12,10 +12,9 @@ async function uploadFile(file, fileName) {
         fileName: fileName, // required
     })
 
-    return result;  
+    return result; // Return the URL of the uploaded file
 }
 
 module.exports = {
-    uploadFile,
- 
+    uploadFile
 }
