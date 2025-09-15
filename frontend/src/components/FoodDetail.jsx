@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/reel.css';
+import Navbar from './Navbar';
+import BottomNav from './BottomNav';
 
 const FoodDetail = () => {
   const { id } = useParams();
@@ -43,6 +45,7 @@ const FoodDetail = () => {
 
   return (
     <div className="food-detail-container">
+      <Navbar />
       <button
         className="detail-back-button"
         onClick={() => navigate('/')}
@@ -73,6 +76,7 @@ const FoodDetail = () => {
           </button>
         </div>
       </div>
+      <BottomNav />
     </div>
   );
 };

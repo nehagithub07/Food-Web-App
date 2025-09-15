@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/reel.css';
+import Navbar from './Navbar';
 
 const CreateFood = () => {
   const [name, setName] = useState('');
@@ -115,6 +116,7 @@ const CreateFood = () => {
 
   return (
     <div className="create-food-page">
+      <Navbar />
       <div className="create-food-container" role="region" aria-labelledby="create-food-title">
         <header>
           <h1 id="create-food-title" className="create-food-title">Create Food Item</h1>

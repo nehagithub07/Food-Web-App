@@ -4,6 +4,7 @@ import '../styles/reel.css';
 import ReelFeed from '../components/ReelFeed';
 import VisitorStore from '../components/VisitorStore';
 import Navbar from '../components/Navbar';
+import BottomNav from '../components/BottomNav';
 
 const Home = () => {
   const [videos, setVideos] = useState([]);
@@ -103,6 +104,7 @@ const Home = () => {
         onSave={saveVideo}
         emptyMessage="No videos available."
       />
+      <BottomNav />
     </div>
   );
 };

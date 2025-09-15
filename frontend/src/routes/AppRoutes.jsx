@@ -7,6 +7,8 @@ import FoodPartnerLogin from '../components/FoodPartnerLogin.jsx';
 import Home from '../pages/Home.jsx';
 import CreateFood from '../components/CreateFood.jsx';
 import FoodDetail from '../components/FoodDetail.jsx';
+import Saved from '../pages/Saved.jsx';
+import Profile from '../pages/Profile.jsx';
 
 const AppRoutes = () => {
   return (
@@ -19,6 +21,9 @@ const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/create-food" element={<CreateFood />} />
         <Route path="/food/:id" element={<FoodDetail />} />
+        <Route path="/saved" element={<Saved />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/:id" element={<Profile />} />
       </Routes>
     </Router>
   );

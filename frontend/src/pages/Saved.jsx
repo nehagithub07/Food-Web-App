@@ -1,51 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useAuth } from './AuthContext'; // Import the auth context
-import { useNavigate } from 'react-router-dom'; // For redirecting to login
+import { useNavigate } from 'react-router-dom';
 import '../styles/reel.css';
 import ReelFeed from '../components/ReelFeed';
+import Navbar from '../components/Navbar';
+import BottomNav from '../components/BottomNav';
 
-const Home = () => {
-  const [videos, setVideos] = useState([]);
+const Saved = () => {
+  const [savedVideos, setSavedVideos] = useState([]);
   const [error, setError] = useState(null);
-  const { isAuthenticated, checkAuth } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchVideos = async () => {
+    console.log('Saved component mounted');
+    const fetchSavedVideos = async () => {
       try {
-        // Check authentication status
-        await checkAuth();
-        if (!isAuthenticated) {
-          setError('Please log in to view videos.');
-          navigate('/login'); // Redirect to login page
-          return;
-        }
-
-        const response = await axios.get('http://localhost:3000/api/food', { withCredentials: true });
-        console.log('Fetched videos:', response.data);
-        const items = response.data.foodItems || [];
-        const videosWithUrl = items.map(item => ({
-          ...item,
-          video: item.video || (item.videos && item.videos[0]) || '',
-          likeCount: item.likeCount || 0,
-          savesCount: item.savesCount || 0,
+        const response = await axios.get('http://localhost:3000/api/food/save', { 
+          withCredentials: true 
+        });
+        console.log('Fetched saved videos:', response.data);
+        
+        const savedItems = response.data.savedFoods || [];
+        const videosWithUrl = savedItems.map(savedItem => ({
+          ...savedItem.food,
+          video: savedItem.food.video || '',
+          likeCount: savedItem.food.likeCount || 0,
+          savesCount: savedItem.food.savesCount || 0,
         }));
-        setVideos(videosWithUrl);
+        
+        setSavedVideos(videosWithUrl);
         setError(null);
       } catch (error) {
-        console.error('Error fetching videos:', error);
+        console.error('Error fetching saved videos:', error);
         if (error.response?.status === 401) {
-          setError('Unauthorized: Please log in to view videos.');
-          navigate('/login');
+          setError('Please log in to view your saved videos.');
+          navigate('/user/login');
         } else {
-          setError('Failed to load videos. Please try again later.');
+          setError('Failed to load saved videos. Please try again later.');
         }
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchVideos();
-  }, [isAuthenticated, checkAuth, navigate]);
+    fetchSavedVideos();
+  }, [navigate]);
 
   const likeVideo = async (item) => {
     try {
@@ -55,7 +55,7 @@ const Home = () => {
         { withCredentials: true }
       );
 
-      setVideos((prev) =>
+      setSavedVideos((prev) =>
         prev.map((v) =>
           v._id === item._id
             ? { ...v, likeCount: response.data.like ? v.likeCount + 1 : v.likeCount - 1 }
@@ -66,8 +66,8 @@ const Home = () => {
     } catch (error) {
       console.error('Error liking video:', error);
       if (error.response?.status === 401) {
-        setError('Unauthorized: Please log in to like videos.');
-        navigate('/login');
+        setError('Please log in to like videos.');
+        navigate('/user/login');
       } else {
         setError('Failed to like/unlike video.');
       }
@@ -82,36 +82,53 @@ const Home = () => {
         { withCredentials: true }
       );
 
-      setVideos((prev) =>
-        prev.map((v) =>
-          v._id === item._id
-            ? { ...v, savesCount: response.data.save ? v.savesCount + 1 : v.savesCount - 1 }
-            : v
-        )
-      );
+      // If unsaved, remove from saved list
+      if (!response.data.save) {
+        setSavedVideos((prev) => prev.filter((v) => v._id !== item._id));
+      } else {
+        setSavedVideos((prev) =>
+          prev.map((v) =>
+            v._id === item._id
+              ? { ...v, savesCount: v.savesCount + 1 }
+              : v
+          )
+        );
+      }
       console.log(response.data.save ? 'Video saved' : 'Video unsaved');
     } catch (error) {
       console.error('Error saving video:', error);
       if (error.response?.status === 401) {
-        setError('Unauthorized: Please log in to save videos.');
-        navigate('/login');
+        setError('Please log in to save videos.');
+        navigate('/user/login');
       } else {
         setError('Failed to save/unsave video.');
       }
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="home-container">
+        <Navbar />
+        <div className="empty-state">Loading your saved videos...</div>
+        <BottomNav />
+      </div>
+    );
+  }
+
   return (
-    <div>
+    <div className="home-container">
+      <Navbar />
       {error && <div className="error-message">{error}</div>}
       <ReelFeed
-        items={videos}
+        items={savedVideos}
         onLike={likeVideo}
         onSave={saveVideo}
-        emptyMessage="No videos available."
+        emptyMessage="No saved videos yet. Start exploring and save your favorites!"
       />
+      <BottomNav />
     </div>
   );
 };
 
-export default Home;
+export default Saved;
